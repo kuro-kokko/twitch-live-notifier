@@ -144,3 +144,7 @@ npm run typecheck
 | `webhook_callback_verification`         | `200`、`challenge` の値をtext/plainで返す        |
 | `stream.online` の `notification`       | `204`、その後バックグラウンドでDiscordに投稿する |
 | それ以外の `notification`、`revocation` | `204`                                            |
+
+## ライセンス
+
+[MIT](LICENSE)

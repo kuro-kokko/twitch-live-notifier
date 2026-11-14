@@ -1,6 +1,7 @@
 {
   "name": "twitch-live-notifier",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",

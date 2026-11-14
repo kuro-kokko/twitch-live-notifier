@@ -144,3 +144,7 @@ npm run typecheck
 | `webhook_callback_verification` | `200` with the `challenge` value as plain text |
 | `notification` for `stream.online` | `204`, then the Discord message is posted in the background |
 | Any other `notification`, or `revocation` | `204` |
+
+## License
+
+[MIT](LICENSE)

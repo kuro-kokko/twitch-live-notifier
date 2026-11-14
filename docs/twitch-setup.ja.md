@@ -141,6 +141,9 @@ curl -i -H 'Content-Type: application/json' -d '{"content":"テスト"}' "$DISCO
 ./twitch event trigger stream.online -F "$WORKER_URL/twitch/eventsub" -s "$TWITCH_SECRET"
 ```
 
+> [!WARNING]
+> `unsupported protocol scheme "c"` と表示された場合は、変数 `WORKER_URL` が空です。Git Bashが `/twitch/eventsub` を `C:/Program Files/Git/twitch/eventsub` というパスに変換してしまうために起きます。`echo "$WORKER_URL" "$TWITCH_SECRET"` で値が入っているか確認し、空なら[手順2](#2-値を変数に入れる)の変数を入れ直してください。
+
 Discordに次のような通知が投稿されれば成功です。疑似イベントなので、チャンネル名はダミー(`testBroadcaster` など)になります。
 
 ```

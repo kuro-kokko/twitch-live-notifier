@@ -1,6 +1,12 @@
 import { Hono } from 'hono'
 import type { Bindings } from './env'
+import { notifyStreamOnline, type StreamOnlineEvent } from './notify'
 import { verifyTwitchSignature } from './signature'
+
+type EventSubNotification = {
+  subscription: { type: string }
+  event: StreamOnlineEvent
+}
 
 const app = new Hono<{ Bindings: Bindings }>()
 
@@ -25,6 +31,18 @@ app.post('/twitch/eventsub', async (c) => {
   if (messageType === 'webhook_callback_verification') {
     const { challenge } = JSON.parse(body) as { challenge: string }
     return c.text(challenge, 200)
+  }
+
+  if (messageType === 'notification') {
+    const payload = JSON.parse(body) as EventSubNotification
+    if (payload.subscription.type === 'stream.online') {
+      // Twitchには先に応答し、通知は応答後にバックグラウンドで行う
+      c.executionCtx.waitUntil(
+        notifyStreamOnline(c.env, payload.event).catch((err) => {
+          console.error('Failed to notify stream.online', err)
+        }),
+      )
+    }
   }
 
   // notification / revocation

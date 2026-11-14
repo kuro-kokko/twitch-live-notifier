@@ -67,6 +67,7 @@ describe('配信開始の通知', () => {
     expect(res.status).toBe(204)
     expect(pending).toHaveLength(1)
 
+    await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1))
     finishSend()
     await settle()
     expect(fetchMock).toHaveBeenCalledTimes(1)

@@ -36,9 +36,9 @@ app.post('/twitch/eventsub', async (c) => {
   if (messageType === 'notification') {
     const payload = JSON.parse(body) as EventSubNotification
     if (payload.subscription.type === 'stream.online') {
-      // Twitchには先に応答し、通知は応答後にバックグラウンドで行う
+      // Twitchには先に応答し、重複チェックと通知は応答後にバックグラウンドで行う
       c.executionCtx.waitUntil(
-        notifyStreamOnline(c.env, payload.event).catch((err) => {
+        notifyStreamOnline(c.env, messageId, payload.event).catch((err) => {
           console.error('Failed to notify stream.online', err)
         }),
       )

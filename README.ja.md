@@ -31,13 +31,17 @@ https://twitch.tv/<チャンネル>
 npm install
 ```
 
-### 2. KV namespaceを作る
+### 2. デプロイする
 
 ```bash
-npx wrangler kv namespace create NOTIFY_KV
+npm run deploy
 ```
 
-表示された `id` を、`wrangler.jsonc` の `REPLACE_WITH_KV_NAMESPACE_ID` と置き換えます。
+表示されたWorkerのURL(`https://<名前>.<サブドメイン>.workers.dev`)を控えます。
+
+KV namespaceを自分で作る必要はありません。`wrangler.jsonc` にはKVの `id` を書いていないので、初回のデプロイ時にwranglerがKVを作成して `NOTIFY_KV` に紐づけます。既存のKVを使うか新しく作るかを聞かれたら、新しく作るほうを選びます。2回目以降のデプロイでは、Workerに紐づいているKVがそのまま使われます。
+
+デプロイ後にwranglerが `wrangler.jsonc` にKVの `id` を書き込んだ場合は、その変更を破棄してかまいません。`id` がなくても、デプロイは引き続き動きます。
 
 ### 3. シークレットを登録する
 
@@ -46,15 +50,9 @@ npx wrangler secret put TWITCH_SECRET        # 10〜100文字の任意の文字�
 npx wrangler secret put DISCORD_WEBHOOK_URL
 ```
 
-### 4. デプロイする
+シークレットは登録した時点で反映されます。もう一度デプロイする必要はありません。
 
-```bash
-npm run deploy
-```
-
-表示されたWorkerのURL(`https://<名前>.<サブドメイン>.workers.dev`)を控えます。
-
-### 5. `stream.online` を購読する
+### 4. `stream.online` を購読する
 
 アプリアクセストークンを取得します。
 
@@ -100,9 +98,9 @@ curl 'https://api.twitch.tv/helix/eventsub/subscriptions' \
 
 ## カスタマイズ
 
-| 内容 | 場所 |
-|------|------|
-| 絵文字の候補 | [src/discord.ts](src/discord.ts) の `EMOJIS` |
+| 内容                                         | 場所                                             |
+| -------------------------------------------- | ------------------------------------------------ |
+| 絵文字の候補                                 | [src/discord.ts](src/discord.ts) の `EMOJIS`     |
 | 同じチャンネルを再通知しない時間(秒、最短60) | [src/notify.ts](src/notify.ts) の `COOLDOWN_SEC` |
 
 絵文字の書式:
@@ -140,9 +138,9 @@ npm run typecheck
 
 `POST /twitch/eventsub`
 
-| リクエスト | 応答 |
-|------------|------|
-| 署名がない、または不正 | `403` |
-| `webhook_callback_verification` | `200`、`challenge` の値をtext/plainで返す |
-| `stream.online` の `notification` | `204`、その後バックグラウンドでDiscordに投稿する |
-| それ以外の `notification`、`revocation` | `204` |
+| リクエスト                              | 応答                                             |
+| --------------------------------------- | ------------------------------------------------ |
+| 署名がない、または不正                  | `403`                                            |
+| `webhook_callback_verification`         | `200`、`challenge` の値をtext/plainで返す        |
+| `stream.online` の `notification`       | `204`、その後バックグラウンドでDiscordに投稿する |
+| それ以外の `notification`、`revocation` | `204`                                            |

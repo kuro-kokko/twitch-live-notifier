@@ -1,15 +1,15 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "twitch-live-notifier",
-  "main": "src/index.ts",
-  "compatibility_date": "2026-11-14",
-  // シークレット(TWITCH_SECRET / DISCORD_WEBHOOK_URL)は `wrangler secret put` で登録する。
-  // ローカル開発時は .dev.vars に書く(.dev.vars.example を参照)。
-  "kv_namespaces": [
-    {
-      "binding": "NOTIFY_KV",
-      // `npx wrangler kv namespace create NOTIFY_KV` で表示された id に置き換える
-      "id": "REPLACE_WITH_KV_NAMESPACE_ID"
-    }
-  ]
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "twitch-live-notifier",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-11-14",
+	// シークレット(TWITCH_SECRET / DISCORD_WEBHOOK_URL)は `wrangler secret put` で登録する。
+	// ローカル開発時は .dev.vars に書く(.dev.vars.example を参照)。
+	"kv_namespaces": [
+		{
+			// id は書かない。初回デプロイ時に wrangler が KV を自動で作成し、
+			// 以降のデプロイではデプロイ済みの Worker に紐づいた KV を引き継ぐ。
+			"binding": "NOTIFY_KV"
+		}
+	]
 }

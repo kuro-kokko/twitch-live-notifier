@@ -31,13 +31,17 @@ The first line is Japanese for "The stream has started", followed by an emoji pi
 npm install
 ```
 
-### 2. Create the KV namespace
+### 2. Deploy
 
 ```bash
-npx wrangler kv namespace create NOTIFY_KV
+npm run deploy
 ```
 
-Copy the `id` it prints into `wrangler.jsonc`, replacing `REPLACE_WITH_KV_NAMESPACE_ID`.
+Note the Worker URL it prints (`https://<name>.<subdomain>.workers.dev`).
+
+You don't need to create the KV namespace yourself. `wrangler.jsonc` has no KV `id`, so on the first deploy Wrangler creates the namespace and binds it to `NOTIFY_KV`. If it asks whether to use an existing namespace or create a new one, choose to create a new one. Later deploys keep using the namespace already bound to the Worker.
+
+If Wrangler writes the KV `id` into `wrangler.jsonc` after deploying, you can discard that change. Deploys keep working without it.
 
 ### 3. Set the secrets
 
@@ -46,15 +50,9 @@ npx wrangler secret put TWITCH_SECRET        # any string of 10-100 characters
 npx wrangler secret put DISCORD_WEBHOOK_URL
 ```
 
-### 4. Deploy
+The secrets take effect immediately. You don't need to deploy again.
 
-```bash
-npm run deploy
-```
-
-Note the Worker URL it prints (`https://<name>.<subdomain>.workers.dev`).
-
-### 5. Subscribe to `stream.online`
+### 4. Subscribe to `stream.online`
 
 Get an app access token:
 
